@@ -13,6 +13,7 @@ public:
 	node(int i) : value(i), Lchild{ nullptr }, Rchild{ nullptr } {}
 	node() { Lchild = Rchild = nullptr; }
 };
+
 class tree {//Full binary trees: 1, 3, 7, 15 ,   2^k-1 nodes
 public:
 	node* root;
@@ -107,15 +108,47 @@ node* tree::MakeTree(int n, int m) {
 	return p;
 }
 
+tree::tree(const initializer_list<int>& I) {
+	auto layers{ log2(size(I) + 1) };
+	root = Const_help(layers, 10);
+	auto start{ I.begin() };
+	helper( I,start, root );
+}
+
+void tree::helper(const initializer_list<int>& I, const int*& pI, node* p) {
+	if (!p) return;
+	helper(I,pI,p->Lchild);
+	p->value = *pI;
+	pI++;
+	helper(I, pI, p->Rchild);
+	return;
+}
+
+void tree::maxHeap(node * p) {
+	if (!p) return;
+	maxHeap(p->Lchild);
+	maxHeap(p->Rchild);
+	if (p->Lchild != nullptr && p->Lchild->value > p->value) {
+		auto mid{ p->value };
+		p->value = p->Lchild->value;
+		p->Lchild->value = mid;
+		maxHeap(p->Lchild);
+	}
+	if (p->Rchild != nullptr && p->Rchild->value > p->value) {
+		auto mid{ p->value };
+		p->value = p->Rchild->value;
+		p->Rchild->value = mid;
+		maxHeap(p->Rchild);
+	}
+	return;
+}
+
 
 int main() {
 
 	tree T20{ 0,1,2,3,4,5,6 };
 	T20.InOrderT(T20.root);
 	cout << endl;//0 1 2 3 4 5 6
-
-
-
 
 
 	return 0;
